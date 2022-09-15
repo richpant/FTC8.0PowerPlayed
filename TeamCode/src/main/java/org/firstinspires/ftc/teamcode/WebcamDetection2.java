@@ -32,10 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -55,17 +51,10 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
-//I am adding a comment to see if github works
-public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
-    //private DcMotor rightFront;
-    private DcMotor rightRear;
-   // private DcMotor leftFront;
-    private DcMotor leftRear;
-    private DcMotor arm;
-   // private DcMotor duck;
-   // private Servo bucket;
-   // private CRServo flipper;
+@TeleOp(name = "Webcam2", group = "Concept")
+
+public class WebcamDetection2 extends LinearOpMode {
+
     /*
      * Specify the source for the Tensor Flow Model.
      * If the TensorFlowLite object model is included in the Robot Controller App as an "asset",
@@ -112,17 +101,6 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        //leftFront = hardwareMap.get(DcMotor.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotor.class, "leftRear");
-       // rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        rightRear = hardwareMap.get(DcMotor.class, "rightRear");
-        arm  = hardwareMap.get(DcMotor.class,"arm");
-
-       // duck = hardwareMap.get(DcMotor.class, "duck");
-        //bucket = hardwareMap.get(Servo.class,"bucket");
-        //flipper = hardwareMap.get(CRServo.class,"flipper");
-       // rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -141,7 +119,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(2.0, 16.0/9.0);
+            tfod.setZoom(1.0, 16.0/9.0);
         }
 
         /** Wait for the game to begin */
@@ -160,8 +138,6 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
                         // step through the list of recognitions and display image position/size information for each one
                         // Note: "Image number" refers to the randomized image orientation/number
-                        int i = 0; //added
-                        boolean isBoltDetected = false; //added
                         for (Recognition recognition : updatedRecognitions) {
                             double col = (recognition.getLeft() + recognition.getRight()) / 2 ;
                             double row = (recognition.getTop()  + recognition.getBottom()) / 2 ;
@@ -172,15 +148,6 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
                             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
                             telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
                             telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
-                            i++; //added
-                            //check label to see if camera sees bolt, this whole if statement added
-                            if (recognition.getLabel().equals("1 Bolt")){
-                                isBoltDetected =true;
-                                telemetry.addData("Side Detected", "Bolt");
-                            }else{
-                                isBoltDetected = false; //added
-                            }
-
                         }
                         telemetry.update();
                     }
@@ -212,7 +179,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.75f;
+        tfodParameters.minResultConfidence = 0.60f;
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 300;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
@@ -222,43 +189,4 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
         // tfod.loadModelFromFile(TFOD_MODEL_FILE, LABELS);
     }
-    //-------------------Move-----------
-    public void move(int rf, int rb, int lf, int lb) {
-        //rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       // leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        //rightFront.setTargetPosition(rf);
-        rightRear.setTargetPosition(rb);
-        //leftFront.setTargetPosition(lf);
-        leftRear.setTargetPosition(lb);
-
-        //rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-        rightRear.setPower(0.6);
-        //rightFront.setPower(0.6);
-
-        //leftFront.setPower(0.6);
-        leftRear.setPower(0.6);
-
-        while (rightRear.isBusy() && leftRear.isBusy()) {
-            sleep(50);
-
-        }
-        //rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       // leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        rightRear.setPower(0);
-       // leftFront.setPower(0);
-        //rightFront.setPower(0);
-        leftRear.setPower(0);
-    }
-
-    }
+}
