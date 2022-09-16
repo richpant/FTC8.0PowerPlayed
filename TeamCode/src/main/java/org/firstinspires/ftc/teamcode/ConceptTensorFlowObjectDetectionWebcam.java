@@ -162,6 +162,8 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
                         // Note: "Image number" refers to the randomized image orientation/number
                         int i = 0; //added
                         boolean isBoltDetected = false; //added
+                        boolean isBulbDetected = false;
+                        boolean isPanelDetected = false;
                         for (Recognition recognition : updatedRecognitions) {
                             double col = (recognition.getLeft() + recognition.getRight()) / 2 ;
                             double row = (recognition.getTop()  + recognition.getBottom()) / 2 ;
@@ -177,10 +179,24 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
                             if (recognition.getLabel().equals("1 Bolt")){
                                 isBoltDetected =true;
                                 telemetry.addData("Side Detected", "Bolt");
+                                        move(100,100);
                             }else{
                                 isBoltDetected = false; //added
                             }
-
+                            if (recognition.getLabel().equals("2 Bulb")){
+                                isBoltDetected =true;
+                                telemetry.addData("Side Detected", "Bulb");
+                                move(-100,100);
+                            }else{
+                                isBoltDetected = false; //added
+                            }
+                            if (recognition.getLabel().equals("3 Panel")){
+                                isBoltDetected =true;
+                                telemetry.addData("Side Detected", "Panel");
+                                move(100,-100);
+                            }else{
+                                isBoltDetected = false; //added
+                            }
                         }
                         telemetry.update();
                     }
@@ -212,7 +228,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.75f;
+        tfodParameters.minResultConfidence = 0.60f;
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 300;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
@@ -223,7 +239,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
         // tfod.loadModelFromFile(TFOD_MODEL_FILE, LABELS);
     }
     //-------------------Move-----------
-    public void move(int rf, int rb, int lf, int lb) {
+    public void move(int rb, int lb) {
         //rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
        // leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
