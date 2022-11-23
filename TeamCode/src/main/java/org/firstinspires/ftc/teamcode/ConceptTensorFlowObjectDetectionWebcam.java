@@ -184,18 +184,19 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
                                 isBoltDetected = false; //added
                             }
                             if (recognition.getLabel().equals("2 Bulb")){
-                                isBoltDetected =true;
+                                isBulbDetected =true;
                                 telemetry.addData("Side Detected", "Bulb");
                                 move(-100,100);
                             }else{
-                                isBoltDetected = false; //added
+                                isBulbDetected = false; //added
                             }
                             if (recognition.getLabel().equals("3 Panel")){
-                                isBoltDetected =true;
+                                isPanelDetected =true;
                                 telemetry.addData("Side Detected", "Panel");
                                 move(100,-100);
+                                move(100,100);
                             }else{
-                                isBoltDetected = false; //added
+                                isPanelDetected = false; //added
                             }
                         }
                         telemetry.update();
